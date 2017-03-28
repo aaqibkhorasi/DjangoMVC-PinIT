@@ -1,0 +1,165 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+<!-- {{upvote.upvote}} -->
+{% load staticfiles %}
+{% load comments %}
+{% load crispy_forms_tags %}
+{% load easy_maps_tags %}
+
+{% if upvote %}
+{{upvote.upvote}}
+{% endif %}
+
+{% if downvote %}
+{{downvote.downvote}}
+{% endif %}
+
+{% if post %}
+
+
+<div class="container">
+<div class="container-detail">
+    <div class="post_main">
+        <a class="btn btn-primary btn-md aButtonDelete" href="{% url 'posts:board_detail' post.board.id %}" style="float: right;">Back to posts</a>
+        <h1 class="h1">{{ post.title }}</h1>
+        <p>{{post.description}}</p>
+        <p id="detail-content">{{post.content}}</p>
+        <img src="{% static 'media/images/'  %}{{thumbname}}">
+        {% easy_map post.location 300 400 %}
+        Location: {{post.location}}  
+    </div>
+
+    <br><hr>
+    {% if user.is_authenticated %}
+    {% if voters %}
+        <table style="width:100%;">
+            <td id="upvote_users" style="width:50%;">
+                <h4 style="text-align: center;">  UPVOTE: {{post.upvote}} </h4>
+                {% for v in voters %}
+                    {% for u in userprofiles%}
+                        {% if v.user_id == u.user_id %}
+                            {% if v.votedUP %}
+                                {% if u.picture != "" %}
+                                    <a href="{% url "posts:other-info" v.user_id %}"> <img src="{% static 'media/' %}{{u.picture}}" height="30"/>  {{v.user}} </a>
+                                {% else %}
+                                    <a href="{% url "posts:other-info" v.user_id %}"> <img src="{% static 'media/images/user_images/default.png' %}" height="30"/>  {{v.user}} </a>
+                                {% endif %}     <!-- endif checking profile pic exists -->
+                            {% endif %}
+                        {% endif %}     <!-- endif v==u -->
+                    {% endfor %}    <!-- userProfile FOREND -->
+                {% endfor %}        <!-- VOTER FOREND -->
+            </td>
+            <td id="downvote_users" style="width:50%; border-left-style: solid; border-width: 1px; border-color: #dddddd; padding-left:10px;">
+            <h4 style="text-align: center;">  DOWNVOTE: {{post.downvote}} </h4>
+                {% for v in voters %}
+                    {% for u in userprofiles%}
+                        {% if v.user_id == u.user_id %}
+                            {% if not v.votedUP %}
+                                {% if u.picture != "" %}
+                                    <a href="{% url "posts:other-info" v.user_id %}"> <img src="{% static 'media/' %}{{u.picture}}" height="30">  {{v.user}} </a>
+                                {% else %}
+                                    <a href="{% url "posts:other-info" v.user_id %}"> <img src="{% static 'media/images/user_images/default.png' %}" height="30">  {{v.user}} </a>
+                                {% endif %}     <!-- endif checking profile pic exists -->
+                            {% endif %}
+                        {% endif %}     <!-- endif v==u -->
+                    {% endfor %}    <!-- userProfile FOREND -->
+                {% endfor %}        <!-- VOTER FOREND -->
+            </td>
+        </table>
+    {% endif %}     <!-- VOTTER ENDIF  -->
+    {% endif %}
+    <hr><br>
+
+    
+
+    <!-- COMMENT SECTION  -->
+    <hr>
+    <!-- FB INTEGRATION  -->
+<!-- likebutton and share button -->
+<div class="fb-like" data-href="http://cmpt470.csil.sfu.ca:8003/PinIt/posts/{{post.id}}" data-layout="standard" data-action="recommend" data-show-faces="true" data-share="true"></div>
+<!-- send button -->
+<div class="fb-send" data-href="http://cmpt470.csil.sfu.ca:8003/PinIt/posts/{{post.id}}"></div>
+
+    <h3> Comments </h3>
+    {% get_comment_count for post as comment_count %}
+    <p>This post has {{ comment_count }} comments.</p>
+    </br>
+    {% get_comment_list for post as comment_list %}
+    <ul data-brackets-id="12674" id="sortable" class="list-unstyled ui-sortable">
+    {% for comment in comment_list %}
+        <div class= "comments">
+        </br>
+        <strong class="pull-left primary-font">Posted by: <a href="{% url "posts:other-info" comment.user_id %}">{{ comment.user_name }}</a></strong>
+        <small class="pull-right text-muted">
+           <span class="glyphicon glyphicon-time"></span> {{ comment.submit_date|timesince }} ago</small>
+        </br></br>
+        <li class="ui-state-default">
+            <p>{{comment.comment}}</p>
+            <!-- USER AUTHENTICATION TO SHOW DELETE LINK -->
+            {% if user == comment.user %}
+            </br>
+            <a class="btn btn-danger btn-md aButtonDelete" href = "{% url 'posts:delete_own_comment' comment.id %}"> Delete Comment </a>
+            {% endif %}
+        </li>
+        
+            
+      </div>
+      <hr>
+{% endfor %}
+</ul>
+<hr>
+
+
+{% if user.is_authenticated %}
+{% get_comment_form for post as form %}
+<table>
+  <form action="{% comment_form_target %}" method="post">
+    {% csrf_token %}
+    <!-- following line will add whole form  -->
+    <!-- {{form}}    --> 
+    {% for field in form %}
+        {% if field.is_hidden %}
+            {{field}}
+        {% else %}
+            {% if field.name != "name" and field.name != "email" and field.name != "url" %}
+                {% if field.errors %}{{ field.errors }}
+                {% endif %}
+
+                {% ifequal field.name "comment"%}
+                    {{field|as_crispy_field}}
+                {% endifequal %}
+                <br>
+                {% ifnotequal field.name "comment"%}
+                    <div style="color:red; ">{{field|as_crispy_field}}</div>
+                {% endifnotequal %}
+
+            {% endif %} <!-- //end if for checking name, email and url field -->
+        {% endif %}     <!-- end if for checking if field is hidden  -->
+    {% endfor %}
+   <!--  {{ form.comment }}
+    {{ form.honeypot }}
+    {{ form.content_type }}
+    {{ form.object_pk }}
+    {{ form.timestamp }}
+    {{ form.security_hash }} -->
+    <input type="hidden" name="next" value="{% url 'posts:post-detail' post.id %}" />
+    <tr>
+      <td colspan="2">
+        <input type="submit" name="submit" value="Post">
+        <input type="submit" name="preview" value="Preview">
+      </td>
+    </tr>
+  </form>
+</table>
+{% else %}
+    <p>Please <a href="{% url 'posts:user-login' %}">log in</a> to leave a comment.</p>
+
+</div>
+{% endif %}
+</div>
+
+{% endif %}     <!-- ENDIF POST -->
+
+
+{% endblock %}

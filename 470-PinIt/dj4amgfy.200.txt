@@ -1,0 +1,26 @@
+﻿Revert "added model: UserProfile, which is connected to User"
+
+This reverts commit 3e556bfc7c0c703ec368b8fa036f1121e569b4dc.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'origin/master' by 2 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   PostFunctions/mysite/db.sqlite3
+#	modified:   PostFunctions/mysite/mysite/settings.py
+#	modified:   PostFunctions/mysite/mysite/settings.pyc
+#	modified:   PostFunctions/mysite/mysite/urls.pyc
+#	modified:   PostFunctions/mysite/post/admin.py
+#	modified:   PostFunctions/mysite/post/admin.pyc
+#	modified:   PostFunctions/mysite/post/forms.pyc
+#	deleted:    PostFunctions/mysite/post/migrations/0012_userprofile.py
+#	deleted:    PostFunctions/mysite/post/migrations/0012_userprofile.pyc
+#	modified:   PostFunctions/mysite/post/models.py
+#	modified:   PostFunctions/mysite/post/models.pyc
+#	modified:   PostFunctions/mysite/post/urls.pyc
+#	modified:   PostFunctions/mysite/post/views.pyc
+#
+

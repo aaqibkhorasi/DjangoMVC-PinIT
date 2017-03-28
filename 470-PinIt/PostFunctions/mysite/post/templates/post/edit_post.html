@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load easy_maps_tags %}
+
+<div class="container"><div class="container-detail">
+{% if post.id %}
+<h1 class="h1">Edit Post</h1>
+<a class="btn btn-link btn-md aButton"  href="{% url 'posts:board_detail' post.board.id %}">Back To Board</a>
+{% else %}
+<h1 class="h1">Add Post</h1>
+WIP: Add link to originating board, auto select current board
+{% endif %}
+<form action="{{ action }}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form|crispy }}
+{% if post.location %}
+{% easy_map post.location 300 400 %}
+{% endif %}
+  <input id="save_post" type="submit" value="Submit" class="btn btn-success pull-right btn-md aButton" />
+</form>
+<br><br>
+</div></div>
+
+{% endblock %}

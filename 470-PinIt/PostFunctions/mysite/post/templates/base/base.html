@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Pin It !  {% block title %}{% endblock %}</title>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+	{% load staticfiles %}
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+
+</head>
+<body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<!-- Brand "Pin It" and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand blackhover" href="{% url 'posts:board_index' %}">Pin It</a>
+			</div>
+
+			<!-- Home & Categories -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a class="blackhover" href="{% url 'posts:board_index' %}">Home</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle blackhover" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categories <span class="caret"></span></a>
+						<ul class="dropdown-menu dropdown-success">
+							<!--<li><a href="#">Top 5 Boards</a></li>-->
+							{% if top_five_board_list %}
+        							{% for board in top_five_board_list %}
+            							<li class="DropdownList"><a href="{% url 'posts:board_detail' board.id %}">{{board.name}}</a></li>
+        							{% endfor %}
+							{% else %}
+        					<li class="DropdownList"><a href="#">No boards are available</a></li>
+    						{% endif %}
+							<li role="separator" class="divider"></li>
+							<li class="DropdownList"><a href="{% url 'posts:board_index' %}">All</a></li>
+						</ul>
+					</li>
+					{% if user.is_authenticated %}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle blackhover" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Account <span class="caret"></span></a>
+							<ul class="dropdown-menu dropdown-success">
+								<li class="DropdownList"><a href="{% url 'posts:user-info' %}">Detail</a></li>
+								<li class="DropdownList"><a href="{% url 'posts:user-editPass' %}">Change Password</a></li>
+								<li class="DropdownList"><a href="{% url 'posts:user-editInfo' %}">Change Information</a></li>
+							</ul>
+						</li>
+					{% endif %}
+				</ul>
+				<!-- Account & Login -->
+				<ul class="nav navbar-right">
+					<!-- <li class="success"><a href="#">Account <span class="sr-only">(current)</span></a></li> -->
+					<div id="spanDiv"></div>
+					{% if user.is_authenticated %}
+						<a style="margin-right:20px;" class="chalk blackhover" href="{% url 'posts:user-info' %}" id="navLogin">Hello, {{ user.username }}</a>
+						<a style="margin-right:20px;" class="chalk blackhover" href="{% url 'posts:user-logout' %}" id="navLogin">Logout</a>
+            		{% else %}
+						<a style="margin-right:20px;" class="chalk blackhover" href="{% url 'posts:user-register' %}" id="navLogin">Register</a>
+						<a style="margin-right:20px;" class="chalk blackhover" href="{% url 'posts:user-login' %}" id="navLogin">Login</a>
+					{% endif %}
+
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+ 
+	<div class="content-container">
+
+	     {% block content %}{% endblock %}
+	</div>
+
+	<!-- !!!!!!!!!!!!!!!!! -->
+	<script type="text/javascript" href="{% static 'js/jquery-2.1.4.js' %}" > </script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<!-- !!!!!!!ALL Script Must Put After This Line!!!!!! -->
+	
+
+	<script type="text/javascript" src="{% static 'js/ajax.js' %}"></script>
+
+
+	{% block script %}{% endblock %}
+	<script type="text/javascript" src="{% static 'js/jquery.zoom.js' %}"></script>
+
+
+
+	<!-- FBSEND  -->
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+
+
+	<!-- FBLIKEBUTTON and SHARE BUTTON-->
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script> 
+
+
+	<script>
+	$(document).ready(function(){
+
+	    $('img')
+	    .wrap('<span style="display:inline-block"></span>') 
+	    .css('display', 'block')
+	    .parent()
+	    .zoom();
+
+    });
+	</script>
+</body>
+</html>
+

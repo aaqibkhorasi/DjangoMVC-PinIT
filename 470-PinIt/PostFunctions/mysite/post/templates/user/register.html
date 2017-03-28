@@ -1,0 +1,34 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="container"><div class="container-detail">
+        {% if user.is_authenticated %}
+            <h1 class="h1">Hello {{ user.username }}!</h1>
+            <a href="{% url 'posts:user-logout' %}">Log out</a><br />
+            <a href="{% url 'posts:board_index' %}">Board Listing</a><br />
+        {% else %}
+
+            <h1 class="h1">Register with PinIt</h1>
+
+            {% if registered %}
+            <strong>thank you for registering!</strong>
+            <a href="{% url 'posts:board_index' %}">Return to the homepage.</a><br />
+            {% else %}
+
+            <form id="user_form" method="post" action="{% url 'posts:user-register' %}"
+                    enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {{ user_form|crispy }}
+                {{ profile_form|crispy }}
+
+                <!-- Provide a button to click to submit the form. -->
+                <input type="submit" name="submit" value="Register" class="btn btn-success pull-right btn-md aButton" />
+            </form>
+<br>
+<br>
+            {% endif %}
+        {% endif %}
+</div></div>
+{% endblock %}

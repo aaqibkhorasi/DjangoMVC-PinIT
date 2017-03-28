@@ -1,0 +1,26 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load staticfiles %}
+
+<div class="container">
+<div class="container-detail">
+    <h1 class="h1">Board Listing</h1>
+     <a href="feed.html" class="RSS">RSS Feed
+</a>
+    {% if full_board_list %}
+    <div class="list-group">
+        {% for board in full_board_list %}
+            <a class="list-group-item"  href="{% url 'posts:board_detail' board.id %}">{{board.name}}</a>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>No boards are available.</p>
+    {% endif %}
+    <br>
+    {% if request.user.is_superuser %}
+    <a class="btn btn-primary btn-md aButton"  href="{% url 'posts:board_add' %}" id="aButton">Add New Board</a>
+    {% endif %}
+</div>
+</div>
+
+{% endblock %}

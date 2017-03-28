@@ -1,0 +1,19 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+<div class="container-detail">
+   <h1 class="h1">Add Board</h1>
+        <form action="{% url 'posts:board_add' %}" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <a href="{% url 'posts:board_index' %}" class="btn btn-danger btn-md aButton">Cancel</a>
+        <input id="save_board" class="btn btn-success btn-md aButton" type="submit" value="Submit" />
+    </form>
+</div>
+</div>
+
+
+{% endblock %}
+

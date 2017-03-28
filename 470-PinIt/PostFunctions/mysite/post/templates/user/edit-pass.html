@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container"><div class="container-detail">
+        <h1 class="h1">Edit {{ user.username }}'s password</h1>
+        <form id="user_form" method="post" action="{% url 'posts:user-editPass' %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            {% if isSaved %}
+            <div> You have successfully edited your information </div>
+            {% endif %}
+        <a href="{% url 'posts:user-info' %}" class="btn btn-danger btn-md aButton">Cancel</a>
+        <input type="submit" name="submit" value="Change Password" class="btn btn-success btn-md aButton" />          
+        </form>
+{% comment %}        <div> <a href="{% url 'posts:post-list' %}">Back to posts</a><br /> </div>
+        <div> <a href="{% url 'posts:user-logout' %}">Log out</a><br /> </div> {% endcomment %}
+</div></div>
+{% endblock %}
+

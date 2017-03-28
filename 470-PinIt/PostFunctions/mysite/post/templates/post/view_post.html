@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+{% load staticfiles %}
+{% load comments %}
+
+<div id="wrapper">
+    <div id="columns">
+    {% for post in object_list %}
+        <div class="pin">
+            <h3 class="h3" style="margin-top:0;" >{{post.title|truncatechars:10 }}</h3>
+            <a href="{% url "posts:post-detail" post.id%}">
+            <img src= "{% static 'media/' %}{{post.thumbImage}}" />
+            </a>
+            <p>
+            {{post.description}} 
+            </p>
+            <hr>
+            {% if user.is_authenticated %}
+                <div>
+                  <a href="{% url "posts:upvote-detail" post.id %}"class='up_vote'>Up vote   </a>
+                  <p> {{ post.upvote }} </p> 
+                </div>
+                <div>
+                  <a href="{% url "posts:downvote-detail" post.id %}" class='down_vote'> Down vote </a>
+                  <p>{{post.downvote}}</p>
+                </div>   
+
+                <div>
+                {% get_comment_count for post as comment_count %}
+                <p> Comments : {{ comment_count }} </p>
+                </div>
+
+            {% else %}
+                <div>
+                  <p>Up vote {{ post.upvote }} </p> 
+                </div>
+
+                <div>
+                  <p> Down vote {{post.downvote}}</p>
+                </div>   
+
+                <div>
+                    {% get_comment_count for post as comment_count %}
+                    <p> Comments : {{ comment_count }} </p>
+                </div>
+
+                <div>
+                    <a href="{% url "posts:user-login" %}"> Login </a> to vote
+                </div
+            {% endif %}
+            <p style="clear:both;">
+                    posted by
+                    <a href="{% url "posts:other-info" post.publisher_id %}">{{post.publisher|truncatechars:10 }}</a>
+            <hr>
+                {% if user.id == post.publisher_id or request.user.is_superuser %}
+                    <a class="btn btn-primary btn-md" href="{% url "posts:post-edit" post.id %}"> edit </a>
+                {% endif %}
+            </p>
+
+        </div>
+    {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
+ 
+
